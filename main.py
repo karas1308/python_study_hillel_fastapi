@@ -5,8 +5,11 @@ import motor.motor_asyncio
 from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 
+from config import MONGO_INITDB_ROOT_PASSWORD, MONGO_INITDB_ROOT_USERNAME
+
 app = FastAPI()
-mongo_client = motor.motor_asyncio.AsyncIOMotorClient('mongodb://root:example@mongo_db:27017')
+mongo_client = motor.motor_asyncio.AsyncIOMotorClient(
+    f'mongodb://{MONGO_INITDB_ROOT_USERNAME}:{MONGO_INITDB_ROOT_PASSWORD}@localhost:27017')
 db = mongo_client.deep_links
 
 
