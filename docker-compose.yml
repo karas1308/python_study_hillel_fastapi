@@ -10,6 +10,10 @@ services:
       - "8000:8000"
     depends_on:
       - mongo
+    environment:
+      MONGO_DB_SERVER: mongo_db
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
 
   mongo:
     image: mongo
