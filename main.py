@@ -1,38 +1,29 @@
-import uuid
 from typing import Annotated, Optional
 
-import motor.motor_asyncio
 from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 
-from config import MONGO_DB_SERVER, MONGO_INITDB_ROOT_PASSWORD, MONGO_INITDB_ROOT_USERNAME
+from common import create_short_url, get_long_url
+from mongo_db import db
 
 app = FastAPI()
-mongo_client = motor.motor_asyncio.AsyncIOMotorClient(
-    f'mongodb://{MONGO_INITDB_ROOT_USERNAME}:{MONGO_INITDB_ROOT_PASSWORD}@{MONGO_DB_SERVER}:27017')
-db = mongo_client.deep_links
 
 
 @app.post("/")
 async def root(long_url: Annotated[str, Form()], short_url: Optional[str] = Form(None)):
-    if short_url:
-        link = await db.deep_links.find_one({"short_url": short_url})
-        if link:
-            return {"error": "short url already exists"}
-    else:
-        short_url = str(uuid.uuid4())
-    await db.deep_links.insert_one({"short_url": short_url, "long_url": long_url})
-    return short_url
+    return create_short_url(long_url, short_url)
 
 
 @app.get("/{short_url}")
 async def to_long(short_url: str):
-    link = await db.deep_links.find_one({"short_url": short_url})
-    return RedirectResponse(link["long_url"])
+    long_url = await get_long_url(short_url)
+    data = await db.deep_links.find_one({"short_url": short_url})
+    await db.redirects.insert_one({"short_url": short_url, "owner": data["user_id"]})
+    return RedirectResponse(long_url)
 
 
 @app.post("/{short_url}")
-async def udpate_short_url(short_url: str, new_long_url: Annotated[str, Form()]):
+async def update_short_url(short_url: str, new_long_url: Annotated[str, Form()]):
     old_link = await db.deep_links.find_one({"short_url": short_url})
     update_result = await db.deep_links.update_one({"_id": old_link["_id"]}, {"$set": {"long_url": new_long_url}})
     if update_result["acknowledged"]:
