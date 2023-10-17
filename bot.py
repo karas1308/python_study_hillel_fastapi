@@ -10,9 +10,17 @@ from common import create_short_url, get_long_url, get_user_redirects, get_user_
 
 bot = AsyncTeleBot('6486089059:AAGfjUSWVwqLRWTglf7A5czFP2W3YQwHhQw')
 
+commands = {
+    'start': 'Get used to the bot',
+    'help': 'Gives you information about the available commands',
+    'create': 'Creates short url',
+    'get_all': 'Shows all users urls',
+    'get_redirects': 'Shows users redirects statistics'
+}
+
 
 # Handle '/start' and '/help'
-@bot.message_handler(commands=['help', 'start'])
+@bot.message_handler(commands=['start'])
 async def send_welcome(message):
     await bot.reply_to(message, """\
 Hi there, I am EchoBot.
@@ -43,6 +51,16 @@ async def get_all_user_urls(message: Message):
     user_id = message.from_user.id
     redirects = await get_user_redirects(user_id)
     await bot.send_message(message.chat.id, redirects)
+
+
+# help page
+@bot.message_handler(commands=['help'])
+async def command_help(message):
+    help_text = "The following commands are available: \n"
+    for key in commands:
+        help_text += "/" + key + ": "
+        help_text += commands[key] + "\n"
+    await bot.send_message(message.chat.id, help_text)
 
 
 # Handle all other messages with content_type 'text' (content_types defaults to ['text'])
