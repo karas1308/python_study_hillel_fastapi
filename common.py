@@ -36,9 +36,8 @@ async def get_user_urls(user_id):
 async def get_user_redirects(user_id):
     redirects = db.redirects.aggregate([
         {"$match": {"owner": user_id}},
-        {"$group":
-             {"_id": "$short_url",
-              "count": {"$sum": 1}}}
+        {"$group": {"_id": "$short_url",
+                    "count": {"$sum": 1}}}
     ])
     data_as_list = await redirects.to_list(length=100)
     redirects_list = []
