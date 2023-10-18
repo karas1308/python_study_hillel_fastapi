@@ -7,8 +7,9 @@ from telebot.async_telebot import AsyncTeleBot
 from telebot.types import Message
 
 from common import create_short_url, get_long_url, get_user_redirects, get_user_urls
+from config import TELEBOT_TOKEN
 
-bot = AsyncTeleBot('6486089059:AAGfjUSWVwqLRWTglf7A5czFP2W3YQwHhQw')
+bot = AsyncTeleBot(TELEBOT_TOKEN)
 
 commands = {
     'start': 'Get used to the bot',
