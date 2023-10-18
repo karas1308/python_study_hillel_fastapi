@@ -32,11 +32,13 @@ I am here to echo your kind words back to you. Just say anything nice and I'll s
 # Handle all other messages with content_type 'text' (content_types defaults to ['text'])
 @bot.message_handler(commands=['create'])
 async def create_short(message: Message):
-    long_url = message.text.replace("/create ", "")
-    user_id = message.from_user.id
-    short_url = await create_short_url(long_url, user_id=user_id)
-    await bot.reply_to(message, short_url)
-
+    long_url = message.text.replace("/create", "").strip()
+    if long_url:
+        user_id = message.from_user.id
+        short_url = await create_short_url(long_url, user_id=user_id)
+        await bot.reply_to(message, short_url)
+    else:
+        await bot.reply_to(message, "Provide url")
 
 @bot.message_handler(commands=['get_all'])
 async def get_all_user_urls(message: Message):
