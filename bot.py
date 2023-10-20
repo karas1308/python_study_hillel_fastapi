@@ -40,6 +40,7 @@ async def create_short(message: Message):
     else:
         await bot.reply_to(message, "Provide url")
 
+
 @bot.message_handler(commands=['get_all'])
 async def get_all_user_urls(message: Message):
     user_id = message.from_user.id
