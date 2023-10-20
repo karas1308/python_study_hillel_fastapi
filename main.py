@@ -14,7 +14,6 @@ app = FastAPI()
 
 
 def fake_hash_password(password: str):
-    # return "fakehashed" + password
     return hashlib.md5(password.encode("utf-8"))
 
 
