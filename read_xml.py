@@ -17,7 +17,7 @@ def wrap_text(text, max_line_length=50):
     if current_line:
         lines.append(current_line.strip())
 
-    return "\n".join(lines)  # Повернути текст з переносами рядка
+    return "\n".join(lines)
 
 
 def print_news(entries_list):
