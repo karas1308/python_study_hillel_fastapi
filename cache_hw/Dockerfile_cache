@@ -1,0 +1,4 @@
+FROM memcached:alpine3.18
+EXPOSE 11211
+
+
